@@ -5,7 +5,7 @@ RUN ln -sf /lib/systemd/system/docker.service /etc/systemd/system/multi-user.tar
 
 # Configure docker to listen on TCP without TLS
 RUN mkdir -p /etc/docker && \
-    echo '{"hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"]}' > /etc/docker/daemon.json && \
+    echo '{"hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"], "tls": false}' > /etc/docker/daemon.json && \
     mkdir -p /etc/systemd/system/docker.service.d && \
     echo '[Service]\nExecStart=\nExecStart=/usr/bin/dockerd' > /etc/systemd/system/docker.service.d/override.conf
 
