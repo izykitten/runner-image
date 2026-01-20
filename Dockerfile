@@ -2,22 +2,14 @@ FROM mcr.microsoft.com/windows/server:ltsc2025
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# PowerShell 7
-RUN Invoke-WebRequest -UseBasicParsing -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.zip -OutFile pwsh.zip; \
-    Expand-Archive pwsh.zip -DestinationPath 'C:\Program Files\PowerShell\7'; \
-    Remove-Item pwsh.zip; \
-    setx /M PATH \"C:\Program Files\PowerShell\7;$env:PATH\"
+# Install Chocolatey
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install PowerShell 7, Git, and Docker CLI
+RUN choco install -y powershell-core git docker-cli
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Docker CLI
-RUN Invoke-WebRequest -UseBasicParsing -Uri https://download.docker.com/win/static/stable/x86_64/docker-29.1.4.zip -OutFile docker.zip; \
-    Expand-Archive docker.zip -DestinationPath C:\; \
-    Remove-Item docker.zip
-
-# Git
-RUN Invoke-WebRequest -UseBasicParsing -Uri https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.2/MinGit-2.47.1.2-64-bit.zip -OutFile git.zip; \
-    Expand-Archive git.zip -DestinationPath 'C:\Program Files\Git'; \
-    Remove-Item git.zip
-
-RUN setx /M PATH \"C:\docker;C:\Program Files\Git\cmd;$env:PATH\"
+CMD ["pwsh"]
