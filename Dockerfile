@@ -8,7 +8,8 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install PowerShell 7, Git, and Docker CLI
-RUN choco install -y powershell-core git docker-cli
+RUN --mount=type=cache,target=C:\ProgramData\chocolatey\cache \
+    choco install -y powershell-core git docker-cli
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
