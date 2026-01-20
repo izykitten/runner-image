@@ -20,7 +20,4 @@ RUN choco install -y --no-progress powershell-core git docker-cli docker-buildx 
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Configure Git
-RUN git config --system credential.helper manager
-
-CMD ["pwsh"]
+ENTRYPOINT ["pwsh"]
