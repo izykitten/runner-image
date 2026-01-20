@@ -26,22 +26,23 @@ RUN choco install -y --no-progress powershell-core git docker-cli 7zip curl; \
     if (Test-Path C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet) { Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet -ErrorAction SilentlyContinue }; \
     $true
 
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
 # Install and configure OpenSSH server using Windows capability
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server; \
     Set-Service -Name sshd -StartupType Automatic; \
     New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -PropertyType String -Force; \
     $true
 
-# Copy authorized keys for ContainerAdministrator
-COPY authorized_keys C:\\ProgramData\\ssh\\administrators_authorized_keys
+# Copy SSH Configuration and host keys
+COPY ssh/* /ProgramData/ssh/
 
-# Set proper permissions on authorized_keys file
-RUN icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /inheritance:r; \
-    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant 'SYSTEM:(F)'; \
-    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant 'BUILTIN\Administrators:(F)'; \
+# Set proper permissions on SSH folder
+RUN icacls C:\\ProgramData\\ssh /inheritance:r /T; \
+    icacls C:\\ProgramData\\ssh /grant 'SYSTEM:(OI)(CI)F' /T; \
+    icacls C:\\ProgramData\\ssh /grant 'BUILTIN\Administrators:(OI)(CI)F' /T; \
     $true
 
-SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 EXPOSE 22
 
