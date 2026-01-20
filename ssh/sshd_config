@@ -1,0 +1,24 @@
+# Only allow Administrator account
+AllowUsers Administrator
+
+# Disable password authentication
+PasswordAuthentication no
+
+# Enable public key authentication
+PubkeyAuthentication yes
+
+# Use administrators_authorized_keys for admin users
+AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
+
+# Host keys
+HostKey __PROGRAMDATA__/ssh/ssh_host_ed25519_key
+HostKey __PROGRAMDATA__/ssh/ssh_host_ecdsa_key
+HostKey __PROGRAMDATA__/ssh/ssh_host_rsa_key
+
+# Logging
+SyslogFacility LOCAL0
+LogLevel INFO
+
+# Security
+StrictModes yes
+MaxAuthTries 3

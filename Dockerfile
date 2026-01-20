@@ -17,6 +17,7 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
 
 # Install PowerShell 7, Git, Docker CLI, and common CI tools
 RUN choco install -y --no-progress powershell-core git docker-cli 7zip curl; \
+    git config --system credential.helper ''; \
     if (Test-Path C:\\ProgramData\\chocolatey\\cache) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\cache -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\ProgramData\\chocolatey\\logs) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\logs -ErrorAction SilentlyContinue }; \
     if (Test-Path 'C:\\ProgramData\\Package Cache') { Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache' -ErrorAction SilentlyContinue }; \
