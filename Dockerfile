@@ -16,7 +16,7 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     $true
 
 # Install PowerShell 7, Git, Docker CLI, Docker Compose, and common CI tools
-RUN choco install -y --no-progress powershell-core git docker-cli docker-compose 7zip curl; \
+RUN choco install -y --no-progress powershell-core git docker-cli docker-compose docker-buildx-plugin 7zip curl; \
     if (Test-Path C:\\ProgramData\\chocolatey\\cache) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\cache -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\ProgramData\\chocolatey\\logs) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\logs -ErrorAction SilentlyContinue }; \
     if (Test-Path 'C:\\ProgramData\\Package Cache') { Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache' -ErrorAction SilentlyContinue }; \
@@ -39,11 +39,16 @@ RUN Add-WindowsCapability -Online -Name OpenSSH.Server; \
 # Copy SSH Configuration and host keys
 COPY ssh/* /ProgramData/ssh/
 
-# Set proper permissions on SSH folder
-RUN icacls C:\\ProgramData\\ssh /inheritance:r /T; \
-    icacls C:\\ProgramData\\ssh /grant 'SYSTEM:(OI)(CI)F' /T; \
-    icacls C:\\ProgramData\\ssh /grant 'BUILTIN\Administrators:(OI)(CI)F' /T; \
-    icacls C:\\ProgramData\\ssh /grant 'NT SERVICE\sshd:(OI)(CI)R' /T; \
+# Fix Permission denied: explicitly grant sshd access to the config
+RUN $ssh = 'C:\ProgramData\ssh'; \
+    $config = Join-Path $ssh 'sshd_config'; \
+    if (-not (Test-Path $config)) { throw "Missing sshd_config: $config" }; \
+    \
+    & icacls $ssh /inheritance:e | Out-Null; \
+    & icacls $ssh /grant 'NT SERVICE\sshd:(OI)(CI)RX' | Out-Null; \
+    & icacls $config /grant 'NT SERVICE\sshd:R' | Out-Null; \
+    \
+    & 'sshd' -t; \
     $true
 
 
