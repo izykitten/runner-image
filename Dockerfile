@@ -21,9 +21,7 @@ RUN choco install -y --no-progress powershell-core git docker-cli 7zip curl; \
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Configure Git and set pwsh as default shell
-RUN git config --system credential.helper manager; \
-    if (-not (Test-Path 'HKLM:\SOFTWARE\OpenSSH')) { New-Item -Path 'HKLM:\SOFTWARE\OpenSSH' -Force }; \
-    Set-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -Force
+# Configure Git
+RUN git config --system credential.helper manager
 
 CMD ["pwsh"]
