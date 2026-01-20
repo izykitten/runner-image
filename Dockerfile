@@ -11,8 +11,8 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     if (Test-Path 'C:\\ProgramData\\Package Cache') { Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache' -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\Windows\\Temp) { Remove-Item -Force -Recurse C:\\Windows\\Temp\\* -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\Windows\\SoftwareDistribution\\Download) { Remove-Item -Force -Recurse C:\\Windows\\SoftwareDistribution\\Download\\* -ErrorAction SilentlyContinue }; \
-    if (Test-Path C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp) { Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp\\* -ErrorAction SilentlyContinue }; \
-    if (Test-Path C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet) { Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet -ErrorAction SilentlyContinue }; \
+    if (Test-Path C:\\Users\\Administrator\\AppData\\Local\\Temp) { Remove-Item -Force -Recurse C:\\Users\\Administrator\\AppData\\Local\\Temp\\* -ErrorAction SilentlyContinue }; \
+    if (Test-Path C:\\Users\\Administrator\\AppData\\Local\\NuGet) { Remove-Item -Force -Recurse C:\\Users\\Administrator\\AppData\\Local\\NuGet -ErrorAction SilentlyContinue }; \
     $true
 
 # Install PowerShell 7, Git, Docker CLI, Docker Compose, and common CI tools
@@ -22,8 +22,8 @@ RUN choco install -y --no-progress powershell-core git docker-cli docker-compose
     if (Test-Path 'C:\\ProgramData\\Package Cache') { Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache' -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\Windows\\Temp) { Remove-Item -Force -Recurse C:\\Windows\\Temp\\* -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\Windows\\SoftwareDistribution\\Download) { Remove-Item -Force -Recurse C:\\Windows\\SoftwareDistribution\\Download\\* -ErrorAction SilentlyContinue }; \
-    if (Test-Path C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp) { Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp\\* -ErrorAction SilentlyContinue }; \
-    if (Test-Path C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet) { Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\NuGet -ErrorAction SilentlyContinue }; \
+    if (Test-Path C:\\Users\\Administrator\\AppData\\Local\\Temp) { Remove-Item -Force -Recurse C:\\Users\\Administrator\\AppData\\Local\\Temp\\* -ErrorAction SilentlyContinue }; \
+    if (Test-Path C:\\Users\\Administrator\\AppData\\Local\\NuGet) { Remove-Item -Force -Recurse C:\\Users\\Administrator\\AppData\\Local\\NuGet -ErrorAction SilentlyContinue }; \
     $true
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
