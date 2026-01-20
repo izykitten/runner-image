@@ -54,6 +54,14 @@ RUN $ssh = 'C:\ProgramData\ssh'; \
     & icacls $config /grant:r 'SYSTEM:F' 'BUILTIN\Administrators:F' | Out-Null; \
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
     \
+    $adminKeys = Join-Path $ssh 'administrators_authorized_keys'; \
+    if (Test-Path $adminKeys) { \
+        & icacls $adminKeys /inheritance:r | Out-Null; \
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+        & icacls $adminKeys /grant:r 'SYSTEM:F' 'BUILTIN\Administrators:F' | Out-Null; \
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+    } \
+    \
     Get-ChildItem -LiteralPath $ssh -Filter 'ssh_host_*_key' -File | ForEach-Object { \
         & icacls $_.FullName /inheritance:r | Out-Null; \
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
