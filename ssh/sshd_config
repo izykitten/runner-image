@@ -1,5 +1,4 @@
-# Only allow Administrator account
-AllowUsers Administrator
+AllowUsers ContainerAdministrator
 
 # Disable password authentication
 PasswordAuthentication no
