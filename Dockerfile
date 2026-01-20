@@ -48,4 +48,5 @@ SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference
 
 EXPOSE 22
 
-ENTRYPOINT ["pwsh"]
+ENTRYPOINT ["pwsh", "-Command"]
+CMD ["Start-Service sshd; while ($true) { Start-Sleep -Seconds 3600 }"]
