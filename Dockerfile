@@ -20,4 +20,4 @@ RUN Invoke-WebRequest -UseBasicParsing -Uri https://github.com/git-for-windows/g
     Expand-Archive git.zip -DestinationPath 'C:\Program Files\Git'; \
     Remove-Item git.zip
 
-RUN setx /M PATH \"C:\docker;C:\Program Files\Git\cmd;$env:PATH\"
+RUN setx /M PATH "C:\docker;C:\Program Files\PowerShell\7;C:\Program Files\Git\cmd;$env:PATH"
