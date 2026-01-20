@@ -34,8 +34,7 @@ RUN git config --system credential.helper ''
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server; \
     Set-Service -Name sshd -StartupType Automatic; \
     New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -PropertyType String -Force; \
-    $pwd = ConvertTo-SecureString -String 'runner' -AsPlainText -Force; \
-    New-LocalUser -Name 'runner' -Password $pwd -PasswordNeverExpires -AccountNeverExpires; \
+    New-LocalUser -Name 'runner' -NoPassword -AccountNeverExpires; \
     Add-LocalGroupMember -Group 'Administrators' -Member 'runner'; \
     $true
 
