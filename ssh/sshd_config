@@ -20,5 +20,5 @@ StrictModes yes
 MaxAuthTries 3
 
 # Admin users use administrators_authorized_keys (must be at end)
-Match Group administrators
+Match User ContainerAdministrator
     AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
