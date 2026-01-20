@@ -29,7 +29,7 @@ RUN choco install -y --no-progress powershell-core git docker-cli docker-buildx 
 # Install and configure OpenSSH server using Windows capability
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server; \
     Set-Service -Name sshd -StartupType Automatic; \
-    New-ItemProperty -Path "HKLM:\\SOFTWARE\\OpenSSH" -Name DefaultShell -Value "C:\\Program Files\\PowerShell\\7\\pwsh.exe" -PropertyType String -Force; \
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -PropertyType String -Force; \
     if (Test-Path C:\\ProgramData\\ssh\\sshd_config) { \
         (Get-Content C:\\ProgramData\\ssh\\sshd_config) -replace '#PubkeyAuthentication yes', 'PubkeyAuthentication yes' | Set-Content C:\\ProgramData\\ssh\\sshd_config \
     }; \
