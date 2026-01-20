@@ -1,16 +1,23 @@
-FROM docker.io/nestybox/ubuntu-noble-systemd-docker
+FROM mcr.microsoft.com/windows/server:ltsc2025
 
-# Enable docker to start on boot via systemd (manual symlink since systemd isn't running at build time)
-RUN ln -sf /lib/systemd/system/docker.service /etc/systemd/system/multi-user.target.wants/docker.service
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Configure docker to listen on TCP without TLS
-RUN mkdir -p /etc/docker && \
-    echo '{"hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2375"], "tls": false}' > /etc/docker/daemon.json && \
-    mkdir -p /etc/systemd/system/docker.service.d && \
-    echo '[Service]\nExecStart=\nExecStart=/usr/bin/dockerd' > /etc/systemd/system/docker.service.d/override.conf
+# PowerShell 7
+RUN Invoke-WebRequest -UseBasicParsing -Uri https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.zip -OutFile pwsh.zip; \
+    Expand-Archive pwsh.zip -DestinationPath 'C:\Program Files\PowerShell\7'; \
+    Remove-Item pwsh.zip; \
+    setx /M PATH \"C:\Program Files\PowerShell\7;$env:PATH\"
 
-# Set DOCKER_HOST for convenience
-ENV DOCKER_HOST=unix:///var/run/docker.sock
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Default to systemd as init
-ENTRYPOINT ["/sbin/init"]
+# Docker CLI
+RUN Invoke-WebRequest -UseBasicParsing -Uri https://download.docker.com/win/static/stable/x86_64/docker-29.1.4.zip -OutFile docker.zip; \
+    Expand-Archive docker.zip -DestinationPath C:\; \
+    Remove-Item docker.zip
+
+# Git
+RUN Invoke-WebRequest -UseBasicParsing -Uri https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.2/MinGit-2.47.1.2-64-bit.zip -OutFile git.zip; \
+    Expand-Archive git.zip -DestinationPath 'C:\Program Files\Git'; \
+    Remove-Item git.zip
+
+RUN setx /M PATH \"C:\docker;C:\Program Files\Git\cmd;$env:PATH\"
