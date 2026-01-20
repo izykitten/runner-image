@@ -30,9 +30,6 @@ RUN choco install -y --no-progress powershell-core git docker-cli 7zip curl; \
 RUN Add-WindowsCapability -Online -Name OpenSSH.Server; \
     Set-Service -Name sshd -StartupType Automatic; \
     New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Program Files\PowerShell\7\pwsh.exe' -PropertyType String -Force; \
-    if (Test-Path C:\\ProgramData\\ssh\\sshd_config) { \
-        (Get-Content C:\\ProgramData\\ssh\\sshd_config) -replace '#PubkeyAuthentication yes', 'PubkeyAuthentication yes' | Set-Content C:\\ProgramData\\ssh\\sshd_config \
-    }; \
     $true
 
 # Copy authorized keys for ContainerAdministrator
@@ -40,8 +37,8 @@ COPY authorized_keys C:\\ProgramData\\ssh\\administrators_authorized_keys
 
 # Set proper permissions on authorized_keys file
 RUN icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /inheritance:r; \
-    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant "SYSTEM:(F)"; \
-    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant "BUILTIN\\Administrators:(F)"; \
+    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant 'SYSTEM:(F)'; \
+    icacls C:\\ProgramData\\ssh\\administrators_authorized_keys /grant 'BUILTIN\Administrators:(F)'; \
     $true
 
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
