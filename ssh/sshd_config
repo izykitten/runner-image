@@ -6,8 +6,9 @@ PasswordAuthentication no
 # Enable public key authentication
 PubkeyAuthentication yes
 
-# Use administrators_authorized_keys for admin users
-AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
+# Admin users use administrators_authorized_keys
+Match Group administrators
+    AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
 
 # Host keys
 HostKey __PROGRAMDATA__/ssh/ssh_host_ed25519_key
