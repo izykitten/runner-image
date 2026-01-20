@@ -16,7 +16,7 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
     $true
 
 # Install PowerShell 7, Git, Docker CLI, Docker Compose, and common CI tools
-RUN choco install -y --no-progress powershell-core git docker-cli docker-compose docker-buildx-plugin 7zip curl; \
+RUN choco install -y --no-progress powershell-core git docker-cli docker-compose buildx 7zip curl; \
     if (Test-Path C:\\ProgramData\\chocolatey\\cache) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\cache -ErrorAction SilentlyContinue }; \
     if (Test-Path C:\\ProgramData\\chocolatey\\logs) { Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\logs -ErrorAction SilentlyContinue }; \
     if (Test-Path 'C:\\ProgramData\\Package Cache') { Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache' -ErrorAction SilentlyContinue }; \
@@ -44,11 +44,25 @@ RUN $ssh = 'C:\ProgramData\ssh'; \
     $config = Join-Path $ssh 'sshd_config'; \
     if (-not (Test-Path $config)) { throw "Missing sshd_config: $config" }; \
     \
-    & icacls $ssh /inheritance:e | Out-Null; \
-    & icacls $ssh /grant 'NT SERVICE\sshd:(OI)(CI)RX' | Out-Null; \
-    & icacls $config /grant 'NT SERVICE\sshd:R' | Out-Null; \
+    & icacls $ssh /inheritance:r | Out-Null; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+    & icacls $ssh /grant:r 'SYSTEM:(OI)(CI)F' 'BUILTIN\Administrators:(OI)(CI)F' | Out-Null; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
     \
-    & 'sshd' -t; \
+    & icacls $config /inheritance:r | Out-Null; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+    & icacls $config /grant:r 'SYSTEM:F' 'BUILTIN\Administrators:F' | Out-Null; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+    \
+    Get-ChildItem -LiteralPath $ssh -Filter 'ssh_host_*_key' -File | ForEach-Object { \
+        & icacls $_.FullName /inheritance:r | Out-Null; \
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+        & icacls $_.FullName /grant:r 'SYSTEM:F' 'BUILTIN\Administrators:F' | Out-Null; \
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
+    }; \
+    \
+    & 'C:\Windows\System32\OpenSSH\sshd.exe' -t; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
     $true
 
 
