@@ -11,7 +11,7 @@ RUN Set-ExecutionPolicy Bypass -Scope Process -Force; \
 RUN choco install -y --no-progress powershell-core git docker-cli 7zip curl; \
     Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\cache\\* -ErrorAction SilentlyContinue; \
     Remove-Item -Force -Recurse C:\\ProgramData\\chocolatey\\logs\\* -ErrorAction SilentlyContinue; \
-    Remove-Item -Force -Recurse C:\\ProgramData\\Package` Cache\\* -ErrorAction SilentlyContinue; \
+    Remove-Item -Force -Recurse 'C:\\ProgramData\\Package Cache\\*' -ErrorAction SilentlyContinue; \
     Remove-Item -Force -Recurse C:\\Windows\\Temp\\* -ErrorAction SilentlyContinue; \
     Remove-Item -Force -Recurse C:\\Windows\\SoftwareDistribution\\Download\\* -ErrorAction SilentlyContinue; \
     Remove-Item -Force -Recurse C:\\Users\\ContainerAdministrator\\AppData\\Local\\Temp\\* -ErrorAction SilentlyContinue; \
