@@ -6,10 +6,6 @@ PasswordAuthentication no
 # Enable public key authentication
 PubkeyAuthentication yes
 
-# Admin users use administrators_authorized_keys
-Match Group administrators
-    AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
-
 # Host keys
 HostKey __PROGRAMDATA__/ssh/ssh_host_ed25519_key
 HostKey __PROGRAMDATA__/ssh/ssh_host_ecdsa_key
@@ -22,3 +18,7 @@ LogLevel INFO
 # Security
 StrictModes yes
 MaxAuthTries 3
+
+# Admin users use administrators_authorized_keys (must be at end)
+Match Group administrators
+    AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
